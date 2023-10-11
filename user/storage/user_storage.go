@@ -1,12 +1,8 @@
 package user_storage
 
 import (
-	"fmt"
-	"os"
 
 	user_models "github.com/Cheveo/recruiting/user/models"
-	"github.com/joho/godotenv"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -14,20 +10,11 @@ type UserStorage struct {
 	DBPool *gorm.DB
 }
 
-func NewUserStorage() *UserStorage {
-	godotenv.Load(".env")
-	databaseUrl := os.Getenv("DATABASE_URL")
-	fmt.Printf("trying to connect to DB: %s", databaseUrl)
-	dbpool, err := gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err.Error())
-		os.Exit(1)
-	}
-
-	dbpool.AutoMigrate(&user_models.User{})
+func NewUserStorage(db *gorm.DB) *UserStorage {
+	db.AutoMigrate(&user_models.User{})
 
 	return &UserStorage{
-		DBPool: dbpool,
+		DBPool: db,
 	}
 }
 

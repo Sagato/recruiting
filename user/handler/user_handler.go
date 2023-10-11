@@ -10,14 +10,15 @@ import (
 	user_service "github.com/Cheveo/recruiting/user/service"
 	user_storage "github.com/Cheveo/recruiting/user/storage"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type UserHandler struct {
 	UserService user_service.Service
 }
 
-func NewUserHandler() *UserHandler {
-	userStorage := user_storage.NewUserStorage()
+func NewUserHandler(db *gorm.DB) *UserHandler {
+	userStorage := user_storage.NewUserStorage(db)
 	userService := user_service.NewUserService(userStorage)
 	return &UserHandler{
 		UserService: userService,
