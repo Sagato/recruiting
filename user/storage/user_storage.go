@@ -1,7 +1,6 @@
 package user_storage
 
 import (
-
 	user_models "github.com/Cheveo/recruiting/user/models"
 	"gorm.io/gorm"
 )
@@ -11,7 +10,7 @@ type UserStorage struct {
 }
 
 func NewUserStorage(db *gorm.DB) *UserStorage {
-	db.AutoMigrate(&user_models.User{})
+	db.AutoMigrate(&user_models.User{}, &user_models.Profile{}, &user_models.Skill{}, &user_models.Project{})
 
 	return &UserStorage{
 		DBPool: db,
@@ -21,7 +20,7 @@ func NewUserStorage(db *gorm.DB) *UserStorage {
 func (storage *UserStorage) GetUsers() ([]*user_models.User, error) {
 	users := []*user_models.User{}
 
-	res := storage.DBPool.Find(&users)
+	res := storage.DBPool.Preload("Profile.Projects").Preload("Profile.Tools").Preload("Profile.ProgrammingSkills").Find(&users)
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -30,17 +29,17 @@ func (storage *UserStorage) GetUsers() ([]*user_models.User, error) {
 }
 func (storage *UserStorage) CreateUser(user *user_models.User) error {
 	res := storage.DBPool.Create(user)
-	
+
 	return res.Error
 }
 func (storage *UserStorage) UpdateUser(user *user_models.User) error {
 	res := storage.DBPool.Save(user)
 
-	return res.Error 
+	return res.Error
 }
 func (storage *UserStorage) GetUserById(id int) (*user_models.User, error) {
 	user := new(user_models.User)
-	
+
 	res := storage.DBPool.Find(&user, id)
 	if res.Error != nil {
 		return nil, res.Error

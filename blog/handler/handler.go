@@ -1,4 +1,4 @@
-package user_handler
+package blog_handler
 
 import "github.com/gin-gonic/gin"
 

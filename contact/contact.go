@@ -37,8 +37,6 @@ func (h *ContactUsHandler) handlePostContact(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(message)
-
 	t, err := template.ParseFiles("templates/contact_us.html")
 	if err != nil {
 		panic(err.Error())

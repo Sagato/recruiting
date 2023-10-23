@@ -1,7 +1,6 @@
 package email
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -50,7 +49,6 @@ func (gm *GoMailService) SendMail(body string) error {
 		return err
 	}
 
-	fmt.Println("Mail Service", gm.User)
 	m := gomail.NewMessage()
 	for _, recipient := range gm.Recipients {
 		m.SetHeader("From", gm.User)
